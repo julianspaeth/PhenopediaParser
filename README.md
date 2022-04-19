@@ -9,7 +9,7 @@
 ### Usage
 
 ```
-from phenopedia_parser.phenopedia_parser import PhenopediaParser
+from phenopedia_parser import PhenopediaParser
 
 pheno_dataframe = PhenopediaParser.parse(search_term='lung', dataframe=True)
 print(pheno_dataframe)
