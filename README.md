@@ -18,6 +18,5 @@ print(pheno_dataframe)
 ### License
 MIT License
 
-### Support me
-If this package helped you and you want to support me as an open-source developer I would be happy if you buy me a coffee
+### Support
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/julianspaeth)
