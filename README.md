@@ -1,5 +1,10 @@
 # PhenopediaParser
 
+A python API for parsing [Phenopedia](https://phgkb.cdc.gov/PHGKB/startPagePhenoPedia.action "Phenopedia's Homepage"). 
+
+"Phenopedia provides a disease-centered view of genetic association studies summarized in the online Human Genome Epidemiology (HuGE) encyclopedia. Users can switch to a gene-centered view (Genopedia) or to other HuGE Tools."
+
+
 ## Getting Started
 
 ### Install
