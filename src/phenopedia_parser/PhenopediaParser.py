@@ -1,3 +1,5 @@
+import urllib
+
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -12,6 +14,7 @@ headers = {
 
 
 def parse(search_term: str, dataframe=True):
+    search_term = search_term.strip().replace(" ", "+")
     url = f'{cdc_url}/PHGKB/phenoPedia.action?firstQuery={search_term}' \
           f'&typeSubmit=Go&typeOption=disease&check=n&which=1'
     html_text = requests.get(url, headers=headers).text
@@ -23,23 +26,18 @@ def parse(search_term: str, dataframe=True):
         if href.startswith('/PHGKB/phenoPedia.action?firstQuery='):
             diseases[link.getText()] = cdc_url + href
 
-    genes = {}
+    genes = []
     for disease in diseases.keys():
         html_text = requests.get(diseases[disease]).text
         soup = BeautifulSoup(html_text, features="lxml")
-        urls = soup.find_all('a')
-        for gene in urls:
-            url = str(gene.get('href'))
-            if 'geneID' in url and '/PHGKB/huGEPedia.action' in url:
-                geneID = url.split('=')[1].split('&')[0]
-            elif 'searchSummary' in url and geneID is not None:
-                n_pubs = gene.getText().replace('\r\n\t\t\t', '')
-                genes[geneID] = [disease, n_pubs]
-                geneID = None
+        gene_entries = soup.find_all('tr')
+        for gene_entry in gene_entries:
+            td_elements = gene_entry.find_all('td')
+            if len(td_elements) == 3 and td_elements[0].text.strip() != 'Associated Gene':
+                genes.append([td_elements[0].text.strip(), disease, td_elements[1].text.strip(), td_elements[2].text.strip()])
 
     if dataframe:
-        df = pd.DataFrame.from_dict(genes, orient='index').reset_index()
-        rename_map = {'index': 'gene', 0: 'disease', 1: 'n_publications'}
-        return df.rename(rename_map, axis='columns')
+        df = pd.DataFrame(genes, columns=['gene', 'disease', 'n_publications', 'n_meta_analyses'])
+        return df
 
     return genes
